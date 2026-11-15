@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+*.egg-info/
+
+# Withheld until publication: manuscript, drafts, reports, results and logs
+*.pdf
+*.tex
+*.bib
+*.docx
+*.bbl
+*.tgz
+07_paper/
+07_paper_stress/
+02_proposal/
+Claude outputs/
+04_code/results/decision_log.md
+04_code/results/report/
+04_code/results/logs/*
+!04_code/results/logs/.gitkeep
+04_code/results/figures/*
+!04_code/results/figures/.gitkeep
+*.npz
+*.pkl
+*.ckpt
+
+# Office / temp
+~$*
+*.tmp

@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below. A paper citation will be added upon publication."
+title: "Bio-RL: biologically inspired control of a reinforcement learner in non-stationary worlds"
+type: software
+authors:
+  - given-names: Amirreza
+    family-names: Jahantab
+  - given-names: Alireza
+    family-names: Sasannia
+  - given-names: Aytan
+    family-names: Dalfardi
+license:
+  - MIT
+  - CC-BY-4.0
+keywords:
+  - reinforcement learning
+  - non-stationarity
+  - neuromodulation
+  - meta-learning
+  - pre-registration

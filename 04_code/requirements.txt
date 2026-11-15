@@ -1,0 +1,9 @@
+numpy
+scipy
+pandas
+matplotlib
+pytest
+cma
+pyyaml
+# GPU phase (CUDA build): pip install torch --index-url https://download.pytorch.org/whl/cu128
+torch
