@@ -1,0 +1,55 @@
+arms:
+  bandit: 'sliding-window UCB over 7 knob settings (centre, centre +- step on one
+    knob at a time); arm switches every N steps, reward = mean wellbeing over the
+    block, window tau pulls, UCB bonus c * sqrt(log(min(k, tau)) / n). Tuned: centre
+    (3, (-6, 6)), steps (3, (0.05, 3) log), N (10, 300) log, tau (5, 500) log, c (0.001,
+    1) log; 9 params'
+  bias: existing constant-offset control, 8 runs (B8 runs 0-3, B7 addendum runs 4-7),
+    re-tested
+  control: existing further-tuning control, 8 runs (B3/B7), re-tested
+  generic: existing generic global layer, 8 runs (B3 runs 0-3, B7 runs 4-7), re-tested
+  metagrad: 'online SPSA meta-gradient on the 3 knob offsets: antithetic pair of windows
+    of W steps (theta + c*D, theta - c*D, D Rademacher), theta += lr * (r_A - r_B)
+    / (2c) * D, theta clipped to +-6, r = mean wellbeing in the window; perturbation
+    noise from a separate RNG (common random numbers for the world kept). Tuned: theta0
+    (3, (-6, 6)), lr (0.01, 100) log, c (0.01, 1) log, W (10, 300) log; 6 params.
+    Chosen over a one-step TD meta-gradient because the knobs act through a non-differentiable
+    tabular learner with per-state VDBE exploration and death'
+budget: 'each new arm: CMA-ES 20 generations x 12 candidates x 48 agents, sigma 0.15,
+  on VDBE base r % 4, runs 0-7; start u = 0.5 (offsets 0; metagrad lr 1, c 0.1, W
+  55; bandit steps 0.39, N 55, tau 50, c 0.03); CMA seeds 11000 + r (metagrad), 12000
+  + r (bandit); training schedules shared by both new arms, generation seed 21000000
+  + 1000 r + g. Same budget as generic, bias and control'
+id: single_stageB9_modern_baselines
+inference: one-sided Wilcoxon over the 128 schedules of the run-averaged difference,
+  Holm across P1-P5, plus hierarchical bootstrap 95% CI (runs, then schedules); a
+  claim needs both p_Holm < 0.05 and the CI excluding 0. Runs paired by index (same
+  base r % 4)
+interpretation: 'P1 and P2 pass: reading appraisal signals beats standard online hyperparameter
+  adaptation on the same knobs in this task. P1 or P2 fails: the global layer''s gain
+  is not specific to appraisal signals; a standard method does as well (no equivalence
+  claimed without TOST). metagrad or bandit not better than bias: the method mostly
+  finds a constant shift'
+predictions:
+  P1: generic > metagrad
+  P2: generic > bandit
+  P3: metagrad > control
+  P4: bandit > control
+  P5: generic > control
+question: Is the generic global layer (appraisal signals -> knob offsets) better than
+  standard online hyperparameter adaptation (meta-gradient, bandit meta-controller)
+  acting on the same knobs?
+registered: after draft v0.5 and the move to the local machine, before any B9 run
+secondary:
+  bio: the biological module (8 runs) is evaluated as a descriptive reference only
+  bounds: parameters of the new arms within 2% of a search bound are reported
+  decomposition: survival, wellbeing while alive, per-regime score, deaths by regime
+    (as per_regime_b7)
+  per_regime: generic - metagrad and generic - bandit inside each regime, hierarchical
+    CI
+  speed: B6 switch protocol with death disabled on new layouts 1100000-1100999, simulator
+    seeds 91000 + run; arms - control per switch and window, CI only
+  vs_bias: metagrad - bias, bandit - bias, generic - bias (two-sided, CI)
+test: 'new independent set, never used before: 128 schedules (seeds 7000-7127) x 4
+  agents, layout bank 1000000-1000999, simulator seeds 81000 + run; common random
+  numbers across arms'

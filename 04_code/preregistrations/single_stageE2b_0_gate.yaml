@@ -1,0 +1,50 @@
+attempt: SECOND AND LAST attempt at a second environment. If E2b-0 fails, C4 is not
+  run and both gates (E2-0 and E2b-0) are reported in the Supplement as negatives
+calibrate: 'development seeds only: E2 layout bank 3990000-3991999, original bank
+  3995000-3996999, simulator 980000 + 1000 * regime + 100 * value index + chunk (original
+  world: + 500). Tabular learner (controller fixed), 80 settings (alpha {0.1, 0.3,
+  0.6, 0.9} x eps {0.02, 0.1, 0.2, 0.35, 0.5} x safety weight {0.5, 1, 2, 4}) x 256
+  agents, stationary lives 3000 (original) / 4500 (E2) steps. For each regime, s =
+  survival at the setting with the best mean score. Candidates: danger p_zone {0.10,
+  0.15, 0.20, 0.25, 0.30}; uncontrollable p_random {0.003, 0.004, 0.005, 0.006}; scarce
+  regrowth {60, 75, 90, 105, 120}; volatile switch interval {300, 450, 600, 900};
+  safe: none. Choose per regime the value minimising |s_E2 - s_orig|; ties -> the
+  E2-0 value (0.30, 0.006, 105, 450); grid-edge choices are reported. Contrast profile
+  (cross-loss, knob sensitivity) of E2b vs the original world reported, not used for
+  selection'
+changes_after_E2_0: 'declared: (1) the calibration invariant (E2-0 matched the survival
+  of the four stage-B bases, which were tuned in the original world; E2b matches each
+  regime''s ceiling = survival of the tabular learner at the best grid setting in
+  stationary lives); (2) energy decay fixed a priori by distance scaling instead of
+  being calibrated; (3) selection sample sizes 4x (stationary 256 agents, switching
+  64 x 4) because development replicates showed that the stage A / E2-0 protocol has
+  large selection noise in both worlds (headroom 8-30% in the original world, 2-42%
+  in E2). Test size and pass criterion unchanged'
+environment: 'E2 layouts (12 x 12, 3 food >= 6 apart, 2 threat clusters of 7), schedules
+  800-2000 steps, life 9000, juvenile 750, normal regrowth 38, injury 0.4, move cost
+  and food gain as original. Energy decay 0.0026 (energy cost of a shelter-food trip
+  as in the original world: (d + 0.002) x 9.78 = (0.005 + 0.002) x 6.43). Regime parameters
+  from the calibration rule'
+gate: E2b passes if (1) both validation TOSTs pass and (2) the headroom CI excludes
+  0 and the headroom is at least 10% of the range between the non-learner and the
+  reference (as stage A and E2-0). Only then is C4 run (separately registered)
+headroom: 'as stage A / E2-0 with powered selection, in E2b: per-regime best of the
+  80 settings from stationary 4500-step lives, 256 agents per setting and regime (training
+  bank 3450000-3451999, simulator 203000 + 10 regime + chunk); best fixed from 64
+  switching schedules (seeds 47000-47063) x 4 agents (simulator 206000 + schedule
+  index); test on 64 new schedules (seeds 47100-47163) x 8 agents, layout bank 3500000-3500999,
+  simulator 205000 + schedule: best fixed, regime-informed reference and non-learner
+  (alpha 0, eps 0); headroom = reference - best fixed, 95% percentile bootstrap over
+  schedules (4000 resamples, seed 0)'
+id: single_stageE2b_0_gate
+positive_control: 'reported, does not gate: the same powered protocol in the original
+  world (decay 0.005, original regime table), training bank 3700000-3701999, test
+  bank 3710000-3710999, the same schedule seed formulas with original-world schedules,
+  the same simulator formulas + 1'
+registered: after the E2-0 gate failed (5.4% < 10%) and a diagnosis on development
+  seeds (2026-10-29), before any E2b-0 run; smoke tests on scratch output only
+validate: 'as E2-0 with the E2b values: tabular VDBE numpy (vdbe_generic) vs torch
+  (tab), 8 configurations (stage-B VDBE bases r0-3, stage-B3 generic layers r0-3),
+  4096 schedules (seeds 410000-414095) x 4, layout bank 3600000-3600999, independent
+  noise (numpy 280000 + 100 config + chunk, torch 290000 + config); paired TOST over
+  schedules, margin +-0.01, alpha 0.05, pooled score and survival; both must pass'

@@ -1,0 +1,36 @@
+choice: feasible sample nearest to the median of the feasible region in rank-normalised
+  space
+feasible: harm_controllable >= -0.03 and 0.10 <= C_unc <= 0.60 and C_con <= 0.05
+id: sensitivity_and_calibration_v1
+n_samples: 200
+params:
+  c_to_belonging:
+  - 0.0
+  - 8.0
+  - false
+  c_to_safety:
+  - 0.0
+  - 5.0
+  - false
+  delay:
+  - 1
+  - 30
+  - false
+  feedback:
+  - 0.005
+  - 0.08
+  - true
+  kappa_c:
+  - 0.01
+  - 0.2
+  - true
+  ot_buffer:
+  - 0.0
+  - 4.0
+  - false
+  tau_c:
+  - 50
+  - 400
+  - true
+seeds: 4
+steps: 4000

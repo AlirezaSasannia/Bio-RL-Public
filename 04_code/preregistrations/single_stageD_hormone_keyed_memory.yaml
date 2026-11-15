@@ -1,0 +1,48 @@
+arms:
+  keyed: window 3000, hormonal key scales ks (0.01, 30) log, start u = 0.2 (~0.05,
+    near uniform); 5 params
+  keyed_yoked: as keyed, but the key (stored and current) uses another agent's signals
+    (partner +24 mod 48 in training, +256 mod 512 at test); information control
+  short: window 1000, uniform sampling (as the C2 learner); re-tune the 5 base parameters
+  statekeyed: window 3000, state key scales kv (0.01, 30) log, start u = 0.2; 4 params
+    (non-hormonal context)
+  uniform: window 3000, uniform sampling; re-tune the 5 base parameters (memory-capacity
+    control)
+budget: each arm 8 runs on C2-0 base r % 4, CMA-ES 20 x 12 x 48, sigma 0.15; CMA seeds
+  19000 + 100 * arm index + r; generation seed 34000000 + 1000 r + g shared by all
+  arms of run r; lockstep groups of 2 runs
+id: single_stageD_hormone_keyed_memory
+inference: one-sided Wilcoxon over layouts (R) or schedules (score) of the run-averaged
+  difference, Holm across Q1-Q5, plus hierarchical bootstrap 95% CI (runs, then layouts/schedules);
+  a claim needs both
+interpretation: 'Q1-Q3 pass: hormonal state is a useful retrieval key, beyond memory
+  size, beyond information-free keys and beyond location/need similarity. statekeyed
+  >= keyed: a non-hormonal context key is as good, and the benefit is retrieval by
+  context in general, not hormonal state'
+learner: dqnv with the frozen C2-0 bases; replay buffer 3000 steps; per step the newest
+  transition plus 7 drawn from 64 uniform candidates within the agent's window by
+  Gumbel-top-k on -sum((scale * (key - key_now))^2); hormonal key = 5 appraisal signals
+  (clip 0-3, /3), state key = (row/7, col/7, energy, safety)
+predictions:
+  Q1: keyed > uniform on R
+  Q2: keyed > keyed_yoked on R
+  Q3: keyed > statekeyed on R
+  Q4: keyed > uniform on test score
+  Q5: keyed > short on test score
+question: Does replay keyed on the agent's appraisal ('hormonal') state let a network
+  learner re-adapt faster when a previously met regime returns (savings), compared
+  with the same memory sampled uniformly, keyed on another agent's signals, or keyed
+  on the agent's location and needs?
+registered: after C2 results, before any D run; dev smoke tests only (seeds 99980+)
+savings_protocol: 'death disabled; 4200 steps: safe [0,1200), X [1200,1800), safe
+  [1800,2400), X [2400,3000), safe [3000,3600), X [3600,4200), X in danger, uncontrollable,
+  scarce, volatile; 128 layouts (bank 1800000-1800999) x 4 agents, simulator seeds
+  95000 + run (+ 1000 * X index); e_k = mean wellbeing in the first 200 steps of exposure
+  k; re-exposure R = mean(e2, e3), averaged over the 4 X; savings S = R - e1'
+secondary:
+  bounds: parameters within 2% of a bound reported
+  decomposition: survival, wellbeing while alive, deaths by regime on the test set
+  savings: S per arm and differences; per X; e1, e2, e3
+  two_sided: statekeyed - keyed, uniform - short, statekeyed - uniform
+test: 'new independent set: 128 schedules (seeds 12000-12127) x 4 agents, layout bank
+  1700000-1700999, simulator seeds 85000 + run'

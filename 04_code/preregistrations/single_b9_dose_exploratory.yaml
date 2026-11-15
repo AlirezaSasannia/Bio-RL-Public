@@ -1,0 +1,8 @@
+design: metagrad from bias_r offsets (r = 0-7), c 0.05, W 50, lr in {0, 0.01, 0.03,
+  0.1, 0.3, 1}; dev seeds (schedules 99100-99227 x 4 agents, layouts from the training
+  bank, simulator seed 99300 + r)
+expectation: if online SPSA optimises short-term wellbeing at the cost of survival,
+  survival and score fall with lr while wellbeing while alive does not
+id: single_b9_dose_exploratory
+registered: after B9b results, before any run of this diagnostic
+status: exploratory

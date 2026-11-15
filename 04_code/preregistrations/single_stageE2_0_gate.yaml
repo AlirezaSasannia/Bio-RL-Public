@@ -1,0 +1,38 @@
+calibrate: 'development seeds only (schedules 99600+, layout bank 3900000-3900999).
+  Reference: the four stage-B VDBE bases (stageB_opt/vdbe_r0-3, no modulator) in the
+  original world, 512 agents each on original schedules: overall survival s_ref and
+  the share of agents that die during scarcity d_ref. E2: the same bases on E2 schedules
+  for every pair (energy decay in {0.0015, 0.0020, 0.0025, 0.0030, 0.0035, 0.0040})
+  x (scarce regrowth in {60, 75, 90, 105, 120}); choose the pair minimising |s - s_ref|
+  + |d - d_ref| (means over the 4 bases); ties -> larger decay, then 90. Grid set
+  after a development probe (seeds 99600+) showed that decay 0.003-0.005 leaves E2
+  much harsher than the original world; a choice on the grid edge is reported'
+environment: 'E2: 12 x 12 grid, 3 food cells (pairwise and from the shelter >= 6 steps
+  apart), 1 shelter, 2 non-overlapping threat clusters of 7 cells (9.7% of cells;
+  original 9.4%); same five regimes, hit probabilities (danger 0.3 in threat cells,
+  uncontrollable 0.006 anywhere) and injury 0.4; food regrowth 38 (normal), layout
+  change every 450 steps (volatile); regimes 800-2000 steps; life 9000 steps, juvenile
+  750; view radius 3 (7 x 7) for the network learners; move cost and food gain as
+  in the original world. Energy decay and scarce regrowth set by the calibration rule'
+gate: E2 passes if (1) both validation TOSTs pass and (2) the headroom CI excludes
+  0 and the headroom is at least 10% of the range between the non-learner and the
+  reference (as stage A). Only then are the C4 bases tuned (on the lab server, separately
+  registered)
+headroom: 'as stage A with the tabular learner (controller fixed; reference: controller
+  oracle) in E2: 80 constant settings (alpha {0.1, 0.3, 0.6, 0.9} x eps {0.02, 0.1,
+  0.2, 0.35, 0.5} x safety weight {0.5, 1, 2, 4}); per-regime best from 4500-step
+  stationary lives (64 agents per setting and regime, training bank 3000000-3001999);
+  best fixed from 16 switching E2 schedules x 4 agents; test on 64 new E2 schedules
+  (seeds 46000-46063) x 8 agents, layout bank 3300000-3300999, simulator 195000 +
+  schedule: best fixed, regime-informed grid reference and a non-learner (alpha 0,
+  eps 0); headroom = reference - best fixed with bootstrap CI over schedules'
+id: single_stageE2_0_gate
+registered: after the C3c results and the E2 code check (bit-identity of the original
+  world), before any E2-0 run
+validate: 'as single_torch_world_validation, in E2 with the calibrated values: tabular
+  VDBE learner in numpy (controller vdbe_generic) and torch (learner tab); 8 configurations
+  (stage-B VDBE bases r0-3, stage-B3 generic layers r0-3); 4096 E2 schedules (seeds
+  200000-204095) x 4 agents, layout bank 3200000-3200999, same schedules and layouts,
+  independent noise (numpy 180000 + 100 config + chunk, torch 190000 + config); paired
+  TOST over schedule-configuration pairs, margin +-0.01, alpha 0.05, score and survival;
+  both must pass'

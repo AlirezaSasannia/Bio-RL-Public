@@ -1,0 +1,13 @@
+arms:
+  appraisal_only: 'inputs: threat, K, intake, energy deficit'
+  surprise_only: 'inputs: surprise'
+budget: as B3 (20 x 12 x 48, sigma 0.15, zero-effect start), 4 runs on the 4 VDBE
+  bases
+id: single_stageB4_inputs
+inference: 'as B3 amendment: Wilcoxon over schedules + hierarchical CI, Holm across
+  D1-D2'
+predictions:
+  D1: generic(all inputs) > surprise_only
+  D2: generic(all inputs) > appraisal_only
+registered: after B3 results, before any B4 run
+test: B3 fresh test set (128 schedules x 4 agents)

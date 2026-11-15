@@ -1,0 +1,9 @@
+amends: single_stageB5_info_vs_modulation
+change: 'add arm augtab0: as augtab but CMA starts at u=0.9 (thresholds 0.90, signals
+  almost always off, i.e. near zero effect like the generic arm''s start), because
+  augtab started with all 32 contexts active and was still improving at the end. Reported
+  as secondary; E2 is evaluated against the better of augtab and augtab0 (chosen on
+  training score)'
+id: single_stageB5_amendment1
+when: after the yoked and augtab training runs (training curves only), before any
+  test

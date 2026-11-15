@@ -1,0 +1,20 @@
+criterion: Spearman r(true, estimate) >= 0.7 counts as good recovery
+grid_c_to_safety:
+- 0.0
+- 0.8333333333333334
+- 1.6666666666666667
+- 2.5
+- 3.3333333333333335
+- 4.166666666666667
+- 5.0
+grid_kappa:
+- 0.01
+- 0.0165
+- 0.0271
+- 0.0447
+- 0.0737
+- 0.1214
+- 0.2
+id: recovery_v1
+steps_per_phase: 2000
+subjects: 30

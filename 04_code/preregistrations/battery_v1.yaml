@@ -1,0 +1,106 @@
+alpha: 0.05
+architecture_under_test: v0.4
+correction: Holm within 'difference' tests and within 'equivalence' tests
+equivalence_margin_sd: 0.5
+id: battery_v1
+not_testable:
+  PH6 (Otto et al. 2013, stress reduces model-based control): v0.4 has no model-based
+    system; deferred to a learner with a world model
+seeds_per_group: 64
+seeds_withdrawal: 160
+tests:
+- arch: v0.4
+  direction: +
+  id: T1
+  metric: phase1_C
+  phenomenon: PH2 controllability raises cortisol (Dickerson & Kemeny 2004)
+  type: difference
+  x: yoked
+  y: escapable
+- arch: v0.4
+  direction: '-'
+  id: T2
+  metric: phase2_food
+  phenomenon: 'PH1 helplessness: less foraging after inescapable damage'
+  type: difference
+  x: yoked
+  y: escapable
+- arch: v0.4
+  id: T3
+  metric: phase2_food
+  phenomenon: PH1 escapable damage leaves no lasting cost
+  type: equivalence
+  x: escapable
+  y: none
+- arch: v0.4 vs none
+  direction: '-'
+  id: T4
+  metric: phase2_food (yoked - escapable, paired by seed)
+  phenomenon: PH1 the helplessness effect depends on hormones
+  type: difference
+- arch: v0.4
+  direction: '-'
+  id: T5
+  metric: slope_peak_C
+  phenomenon: PH3 HPA habituation to a controllable stressor
+  type: slope
+  x: controllable
+- arch: v0.4
+  direction: '-'
+  id: T6
+  metric: slope_peak_C
+  phenomenon: PH3 habituation is stronger when the stressor is controllable
+  type: difference
+  x: controllable
+  y: uncontrollable
+- arch: v0.4
+  direction: '-'
+  id: T7
+  metric: C
+  phenomenon: PH4 social buffering of cortisol (Heinrichs et al. 2003)
+  type: difference
+  x: companion
+  y: alone
+- arch: v0.4_noOT
+  id: T8
+  metric: C
+  phenomenon: PH4 buffering needs the oxytocin channel
+  type: equivalence
+  x: companion
+  y: alone
+- arch: v0.4
+  direction: '-'
+  id: T9
+  metric: new_world_food
+  phenomenon: 'PH5 v0.4 predicts NO inverted U: learning falls with stress'
+  type: difference
+  x: '2'
+  y: '0'
+- arch: v0.4_CalphaU
+  direction: +
+  id: T10
+  metric: new_world_food
+  phenomenon: PH5 inverted U appears with the cortisol->learning-rate channel
+  type: difference
+  x: '1'
+  y: '0'
+- arch: v0.4_NEalpha
+  direction: +
+  id: T11
+  metric: mean_alpha
+  phenomenon: PH7 learning rate rises with volatility (Behrens et al. 2007)
+  type: difference
+  x: volatile
+  y: stable
+- arch: v0.2 vs none
+  direction: '-'
+  id: T12
+  metric: with_companion
+  phenomenon: PH8 social withdrawal under uncontrollable stress (v0.2)
+  type: difference
+- arch: v0.4 vs v0.2
+  direction: +
+  id: T13
+  metric: with_companion
+  phenomenon: PH8 tend-and-befriend reverses withdrawal (v0.4 vs v0.2)
+  type: difference

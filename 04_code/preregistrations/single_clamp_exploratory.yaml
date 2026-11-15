@@ -1,0 +1,7 @@
+design: generic layers r0-7; each input clamped to its mean over the B5 test lives
+  (from mechanism/per_regime)
+expectation: surprise and deficit clamps cost most in volatile; threat and intake
+  clamps cost little
+id: single_clamp_exploratory
+registered: after mechanism analysis, before any clamp run
+status: exploratory

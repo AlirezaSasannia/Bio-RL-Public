@@ -1,0 +1,39 @@
+arms:
+  aug_ra: control_ra + the 5 appraisal signals as input (scales xs (0.03, 30) log,
+    start ~1); 5 base parameters from the base + xs, as gru_aug; 10 params
+  control_ra: feed-forward dqnv + last felt reward (2) and last action (one-hot 5)
+    as input, encoded as in the gru input; re-tune the 5 base parameters from the
+    C3 base (as gru); 5 params
+  reused: C3 solutions of control, aug and gru (same bases, budget and generation
+    seeds), re-tested
+bases: the 8 frozen C3 bases (single_stageC3_base, 1317a0fe)
+budget: 'as C3 arms: CMA-ES 20 x 12 x 48, sigma 0.15; CMA seed 28000 + 100 * arm index
+  + k; generation seeds 61000000 + 1000 k + g and simulator seed 61000000 + 10 g +
+  c, identical to the C3 arms'
+id: single_stageC3b_gru_confound
+inference: 'as C3/B10: unit = base (n = 8); one-sided t-test on base means, Holm over
+  P1-P2 (and over S1-S3), 95% three-level bootstrap CI; a claim needs p_Holm < 0.05
+  AND the CI excluding 0. Checks: exact Wilcoxon on base means, schedule-level Wilcoxon
+  with hierarchical CI'
+interpretation: 'P1 pass: the GRU''s advantage needs memory, not only the two inputs.
+  P1 fail with control_ra >= gru: the two inputs explain it. P2 pass: the signals
+  still help a feed-forward learner that sees its last reward and action. No detectable
+  difference is not equivalence.'
+predictions:
+  P1: gru > control_ra (memory beyond the two extra inputs)
+  P2: aug_ra > control_ra (signals add information when last reward and action are
+    given)
+question: Is the C3 advantage of the GRU learner memory, or the two inputs it alone
+  received (last felt reward, last action)? Do the appraisal signals still add information
+  when those inputs are given?
+registered: after the C3 results (2026-10-24), before any C3b run; dev smoke test
+  only
+secondary:
+  S1: control_ra vs control (two-sided)
+  S2: aug_ra vs gru (two-sided)
+  S3: gru vs aug (two-sided; re-test of C3 P4 on the new set)
+  bounds: parameters within 2% of a bound reported for every base and new arm
+  deaths: survival, wellbeing while alive, deaths by regime (descriptive)
+test: 'new independent set, never used: 128 schedules (seeds 44000-44127) x 4 agents
+  per base, layout bank 2400000-2400999, simulator seed 140000 + c (c = 0 for bases
+  0-3, 1 for bases 4-7), identical for all five arms'

@@ -1,0 +1,40 @@
+arms:
+  aug: 'signals as network input: the 5 appraisal signals (clipped 0-3, /3) enter
+    the network with per-input scales xs in (0.03, 30) log, start ~1 (signals on);
+    5 params'
+  aug_generic: 'signals as input and global layer: 20 params, start xs ~1, weights
+    0'
+  bias: 3 constant knob offsets in (-6, 6), start 0
+  control: 'no signals: re-tune the 5 base parameters from the base (C0 space)'
+  generic: 'generic global layer on the 3 knobs: 15 weights in (-6, 6), start 0'
+budget: each arm 8 runs on DQN base r % 4, CMA-ES 20 generations x 12 x 48, sigma
+  0.15; CMA seeds 16000 + 100 * arm index + r; generation seed 31000000 + 1000 r +
+  g (shared by all arms of run r)
+id: single_stageC1_fa_arms
+inference: one-sided Wilcoxon over schedules of the run-averaged difference, Holm
+  across G1-G5, plus hierarchical bootstrap 95% CI (runs, then schedules); a claim
+  needs both
+interpretation: 'G1 passes: the tabular finding (modulator > state) holds with function
+  approximation. G1 fails with aug >= generic: with a learner that can generalise,
+  giving the signals as input is as good, and the global layer is not needed for the
+  information. G2 tests signal dependence'
+predictions:
+  G1: generic > aug
+  G2: generic > bias
+  G3: generic > control
+  G4: aug > control
+  G5: aug_generic > aug
+question: With a learner that can generalise (DQN-style, C0), do the appraisal signals
+  help more as network input (state augmentation) or as a global modulator of learning
+  rate, exploration and safety weight?
+registered: after C0 (bases frozen), before any C1 run
+secondary:
+  bounds: parameters within 2% of a bound reported
+  decomposition: survival, wellbeing while alive, per-regime score, deaths by regime
+  speed: B6 switch protocol, death disabled, layouts 1400000-1400999, simulator seeds
+    93000 + run; arms - control per switch and window, CI only
+  two_sided: aug - generic two-sided (if aug matches or beats generic, that is the
+    finding)
+test: 'new independent set: 128 schedules (seeds 10000-10127) x 4 agents, layout bank
+  1300000-1300999, simulator seeds 83000 + run; common schedules and layouts across
+  arms'

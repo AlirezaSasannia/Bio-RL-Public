@@ -1,0 +1,28 @@
+arms:
+  bandit_ws: 'B9 bandit space; CMA start: centre = bias_r offsets, other params u=0.5'
+  metagrad_ws: 'B9 metagrad space; CMA start: theta0 = bias_r offsets (b_a, b_e, b_s),
+    other params u=0.5'
+budget: 20 x 12 x 48, sigma 0.15, 8 runs on VDBE base r % 4 (in addition to the bias
+  budget they inherit, as the add-on arms inherit the base's budget); CMA seeds 13000
+  + r, 14000 + r; generation seed 22000000 + 1000 r + g, shared by both arms
+id: single_stageB9b_warmstart
+inference: 'as B9: one-sided Wilcoxon over schedules + hierarchical CI; Holm over
+  Q1-Q2; both needed'
+interpretation: 'Q1, Q2 pass: the generic layer beats standard online adaptation even
+  when that adaptation starts from the best constant shift. ws arms > bias: online
+  adaptation adds to the shift; ws arms <= bias: in this task online hyperparameter
+  adaptation from wellbeing adds nothing'
+observation: 'B9: metagrad and bandit below bias on the B9 test set (-0.040, -0.047)
+  and below control in training; optimiser shrank the SPSA step (lr 0.02-0.13); neither
+  found the bias offsets (bias raises log learning rate by ~+0.4 in 8/8 runs)'
+predictions:
+  Q1: generic > metagrad_ws
+  Q2: generic > bandit_ws
+registered: after B9 results (B9 test set used), before any B9b run
+secondary:
+  add_to_shift: metagrad_ws - bias, bandit_ws - bias (two-sided, CI)
+  decomposition: survival, wellbeing while alive, deaths by regime
+  replication: B9 P1-P5 re-estimated on the new set (descriptive)
+test: 'new independent set, never used before: 128 schedules (seeds 8000-8127) x 4
+  agents, layout bank 1200000-1200999, simulator seeds 82000 + run; generic, bias,
+  control and the B9 arms re-tested on it'

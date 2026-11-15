@@ -1,0 +1,40 @@
+arms:
+  bio: fuzzy endocrine module (literature rules, MR/GR, NE/cortisol/ghrelin dynamics),
+    16 parameters
+  control: 'no module: the same extra budget spent on tuning the VDBE base further'
+  generic: 'generic linear meta-controller: the same 5 appraisal inputs (threat, controllability,
+    surprise, intake, energy deficit) mapped linearly to the same 3 knob offsets,
+    with a leaky memory (tau 50); 15 parameters'
+  nomem: the bio module with instantaneous hormones (no hormonal time constants);
+    16 parameters
+  randrules: the bio architecture with randomly drawn rules (fixed per run, seed 100
+    + run); 16 parameters
+base: the 4 optimised VDBE controllers of stage B, frozen; 2 add-on optimisations
+  per base = 8 runs per arm
+id: single_stageB3_placebo
+inference: 'for each comparison bio - X: (i) one-sided Wilcoxon over the 8 run-level
+  mean differences (runs paired by base and seed), Holm across C1-C4; (ii) hierarchical
+  bootstrap CI (runs, then schedules). A claim needs both (i) p_Holm < 0.05 and (ii)
+  CI excluding 0'
+optimisation: CMA-ES, 20 generations x 12 candidates x 48 agents, sigma 0.15, starting
+  at zero effect; runs 0-3 of bio and control are the stage-B2 runs (same protocol),
+  runs 4-7 and all other arms are new
+predictions:
+  C1: bio > generic
+  C2: bio > randrules
+  C3: bio > nomem
+  C4: bio > control
+question: Does the add-on gain come from the biological rules, from slow hormonal
+  dynamics, or from any extra layer?
+registered: after an external review of draft v0.2 and before any B3 run
+secondary:
+  decomposition: survival and mean wellbeing while alive, per arm
+  ood: 'out-of-distribution test sets, no re-optimisation: short regimes (200-500
+    steps), long regimes (1500-3000), lethal hits (loss 0.6)'
+  per_regime: difference bio - control inside each regime with CI
+  warm_start: 'phase 2: express each B2 fixed+hormones solution in the stage-B ''fuzzy''
+    space and continue joint CMA-ES (19 parameters, 30 generations, sigma 0.15). If
+    the B failure was a search failure, the result stays at or above the B2 solution
+    and far above B''s from-scratch fuzzy (-67%)'
+test: 'fresh: 128 new schedules (seeds 3000-3127) x 4 agents, layouts 800000+, common
+  random numbers across arms; never used before'

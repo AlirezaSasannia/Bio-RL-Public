@@ -1,0 +1,5 @@
+amends: single_stageB7_more_runs
+change: add the B8 bias arm (runs 4-7, B8 protocol) to the 8-run tests; H1 generic
+  > bias re-estimated
+id: single_stageB7_addendum_bias
+when: after B8 results on 4 runs, before any B7 test

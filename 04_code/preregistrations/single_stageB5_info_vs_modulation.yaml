@@ -1,0 +1,29 @@
+arms:
+  auglin: inputs as linear features of the action values, TD-learned weights, 2 params
+  augtab: inputs binarised (optimised thresholds) appended to the Q-table state, 5
+    params
+  loo_0: generic without input threat, 12 params
+  loo_1: generic without input K, 12 params
+  loo_2: generic without input surprise, 12 params
+  loo_3: generic without input intake, 12 params
+  loo_4: generic without input deficit, 12 params
+  yoked: generic, inputs from another agent (np.roll 24 over the batch), 15 params
+budget: 'as B3/B4: 20 x 12 x 48, sigma 0.15, start u=0.5, 4 runs (one per VDBE base)'
+id: single_stageB5_info_vs_modulation
+inference: one-sided Wilcoxon over schedules of the run-averaged difference, Holm
+  across E1-E5, plus hierarchical bootstrap CI (runs, schedules); a claim needs both
+predictions:
+  E1: generic > yoked
+  E2: generic > augtab
+  E3: generic > auglin
+  E4: generic > surprise_only (B4 replication)
+  E5: generic > appraisal_only (B4 replication)
+registered: after review of draft v0.3, before any B5 run
+secondary:
+  loo: generic - loo_i for each input, CI and Holm over the 5 (secondary family)
+  replication: bio - control, generic - bio on the new set
+  tost: 'B3 randrules and nomem vs bio: equivalence margin +/-0.033 (half of the B3
+    bio - control gain), 90% hierarchical CI, on the B3 set and on the new set'
+test: 'independent replication set: 128 new schedules (seeds 6000-6127) x 4 agents,
+  layout bank 900000-900999, simulator seeds 61000+run; never used before. B3/B4 arms
+  re-tested on it'

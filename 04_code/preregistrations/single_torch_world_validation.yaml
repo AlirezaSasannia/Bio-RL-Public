@@ -1,0 +1,19 @@
+decision: if both primary TOSTs pass, the torch world is used for phase 2; otherwise
+  find the cause first
+design: 'same tabular VDBE learner in both (numpy controller vdbe_generic, torch learner
+  tab, float32 on GPU); 8 configurations: stage-B VDBE bases r0-3 (no global layer)
+  and generic layers r0-3; 4096 schedules (seeds 30000-34095) x 4 agents per configuration,
+  layout bank 300000-300999, same schedules and layouts in both, independent noise
+  (numpy seeds 31000 + chunk, torch 32000 + config)'
+id: single_torch_world_validation
+margin_rationale: '0.01 is below every effect claimed so far (smallest: bias - control
+  0.028)'
+primary: paired TOST over schedule-configuration pairs (32768) of the schedule-mean
+  difference numpy - torch, margin +-0.01 absolute, alpha 0.05, separately for score
+  and survival; both must pass
+question: Is the batched PyTorch regime world equivalent to the numpy simulator used
+  for all stage-B results?
+registered: after phase 1 (B9), before any validation run; dev smoke tests only (seeds
+  99500+, 99800+)
+secondary: per-configuration differences with 95% CI; TOST per configuration reported,
+  not required

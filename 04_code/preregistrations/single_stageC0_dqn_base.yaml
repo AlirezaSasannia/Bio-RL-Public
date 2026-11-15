@@ -1,0 +1,38 @@
+budget: 'as stage B: 4 restarts x 30 generations x 12 candidates x 48 agents, sigma
+  0.15, start u = 0.5, CMA seeds 15000 + r, generation seed 30000000 + 1000 r + g,
+  training layout bank 400000-401999'
+check: parameters within 2% of a bound are reported; if any base sits on a bound,
+  widen and re-run under an amendment
+id: single_stageC0_dqn_base
+learner: 'per-agent MLP (input: one-hot cell 64, cell coordinates 2, own need levels
+  2, 5 appraisal-signal slots scaled by xs (0 here); hidden 32 ReLU; output 2 needs
+  x 5 actions); action value = need weights (as in the table, safety weight s) . per-need
+  values; reward = felt need change; replay 1000 transitions per agent, minibatch
+  8 incl. the newest, every step; double-DQN argmax with no separate target network
+  (C = 1; better than C = 50/200 on dev seeds); Adam direction scaled by the learning-rate
+  knob (cap 0.1); output bias initialised at q_init (optimism); per-cell VDBE exploration
+  driven by |w . delta| / vdbe_sigma'
+output: the CMA mean of each restart = the 4 frozen DQN bases for C1
+registered: after the torch world validation passed, before any C0 run; design choices
+  from dev seeds only
+space:
+  alpha0:
+  - 0.0001
+  - 0.1
+  - log
+  eps0:
+  - 0.0
+  - 0.5
+  - lin
+  q_init:
+  - 0.0
+  - 1.0
+  - lin
+  s0:
+  - 0.05
+  - 20.0
+  - log
+  vdbe_sigma:
+  - 0.001
+  - 100.0
+  - log

@@ -1,0 +1,38 @@
+arm:
+  ff_big: 'dqnv with last reward and action (as C3b control_ra), hidden width 113
+    (17,186 weights vs 17,130 for the GRU; all input weights counted, unused FiLM
+    matrices excluded); re-tune the 5 base parameters from the C3 base; learns from
+    8 single replayed transitions (the GRU from 2 x 4-step sequences: replay scheme
+    not matched)'
+bases: the 8 frozen C3 bases (single_stageC3_base, 1317a0fe)
+budget: CMA-ES 20 x 12 x 48, sigma 0.15; CMA seed 28200 + k; generation seeds 61000000
+  + 1000 k + g and simulator seed 61000000 + 10 g + c, identical to C3 and C3b
+id: single_stageC3c_capacity_control
+inference: 'as C3: unit = base (n = 8); one-sided t-test on base means for Q1, two-sided
+  for secondary (Holm within family); 95% three-level bootstrap CI; a claim needs
+  p_Holm < 0.05 AND the CI excluding 0; exact Wilcoxon on base means and schedule-level
+  Wilcoxon reported as checks'
+interpretation: 'Q1 pass: the GRU advantage needs recurrence beyond matched capacity
+  (replay scheme still differs). Q1 fail with ff_big >= gru: capacity explains it.
+  No detectable difference is not equivalence.'
+predictions:
+  Q1: gru > ff_big (memory beyond capacity; one-sided)
+question: Is the recurrent network's advantage memory, or capacity? A feed-forward
+  net with the same inputs as the GRU (view, needs, last felt reward, last action;
+  no appraisal signals) and the same weight count.
+registered: after the C3b results (2026-10-24) and a dev timing benchmark, before
+  any C3c run
+reused: C3 solutions of gru and aug, C3b solutions of control_ra and aug_ra (same
+  bases, budget, generation seeds)
+secondary:
+  C3b_set: gru - ff_big and ff_big - control_ra on the C3b set
+  S1: ff_big vs control_ra (capacity alone; two-sided)
+  S2: ff_big vs aug_ra (two-sided)
+  S3: gru vs aug_ra (two-sided)
+  bounds: ff_big parameters within 2% of a bound
+  deaths: deaths by regime (descriptive)
+test: 'primary: new set, never used: 128 schedules (seeds 45000-45127) x 4 agents
+  per base, layout bank 2500000-2500999, simulator seed 150000 + c (c = 0 bases 0-3,
+  1 bases 4-7), identical for ff_big, gru, control_ra, aug_ra, aug. Secondary: ff_big
+  on the C3b test set (schedules 44000-44127, layouts 2400000+, simulator 140000 +
+  c), compared with the logged C3b results of the other arms'

@@ -1,0 +1,8 @@
+amends: single_stageC0_dqn_base
+change: 'no re-run: the eps0 bound (0.5) equals the simulator hard cap on exploration
+  for every learner and arm (eps clamped to [0, 0.5]); widening the search bound cannot
+  change behaviour. eps0 is only the initial value of the per-cell VDBE exploration'
+id: single_stageC0_amendment1
+observation: base r0 has eps0 = 0.5 (upper bound); no other base parameter within
+  2% of a bound
+when: after C0 optimisation, before any C1 run

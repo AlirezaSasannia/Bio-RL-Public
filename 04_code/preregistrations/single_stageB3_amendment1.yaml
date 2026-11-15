@@ -1,0 +1,9 @@
+amends: single_stageB3_placebo
+change: '4 runs per arm instead of 8 (one per VDBE base; bio and control = the stage-B2
+  runs). Primary inference: one-sided Wilcoxon over the 128 test schedules of the
+  run-averaged difference, Holm across C1-C4, AND a hierarchical bootstrap CI (runs,
+  then schedules) excluding 0. The run-level sign (4 of 4) is reported descriptively.'
+id: single_stageB3_amendment1
+reason: 'compute: one run takes ~6.5 min per core, 36 runs would take ~2 h; the user
+  asked for faster turnaround'
+when: after 2 of 36 optimisation runs (training curves only), before any test evaluation

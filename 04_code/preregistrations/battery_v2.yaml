@@ -1,0 +1,80 @@
+alpha: 0.05
+architecture_under_test: v0.5 (configs/architectures/v0.5.yaml, kp_effort = 1, tau_kp
+  = 1500)
+correction: Holm within difference tests and within equivalence tests
+equivalence_margin_sd: 0.5
+id: battery_v2
+seed_offset: 60000
+seeds_per_group: 64
+tests:
+- arch: v0.5
+  direction: '-'
+  id: B1
+  metric: phase1_Kp
+  type: difference
+  what: 'manipulation check: yoked damage lowers the controllability prior'
+  x: yoked
+  y: escapable
+- arch: v0.5
+  direction: '-'
+  id: B2
+  metric: phase2_food
+  type: difference
+  what: 'helplessness: less foraging in a new world after inescapable damage'
+  x: yoked
+  y: escapable
+- arch: v0.5
+  direction: '-'
+  id: B3
+  metric: phase2_moved
+  type: difference
+  what: 'helplessness is passivity: fewer moves after inescapable damage'
+  x: yoked
+  y: escapable
+- arch: v0.5
+  id: B4
+  metric: phase2_food
+  type: equivalence
+  what: escapable damage leaves no lasting foraging cost
+  x: escapable
+  y: none
+- arch: v0.5 vs v0.5a
+  direction: '-'
+  id: B5
+  metric: phase2_food difference
+  type: difference
+  what: the effect needs the vigour channel (v0.5 vs v0.5a, yoked - escapable per
+    seed)
+- arch: v0.5
+  direction: '-'
+  id: R1
+  metric: slope_peak_C
+  type: slope
+  what: 'regression: HPA habituation to a controllable stressor (was T5)'
+- arch: v0.5
+  direction: '-'
+  id: R2
+  metric: slope_peak_C
+  type: difference
+  what: 'regression: habituation stronger when controllable (was T6)'
+  x: controllable
+  y: uncontrollable
+- arch: v0.5
+  direction: '-'
+  id: R3
+  metric: C
+  type: difference
+  what: 'regression: social buffering of cortisol (was T7)'
+  x: companion
+  y: alone
+- arch: v0.5 vs v0.2
+  direction: +
+  id: R4
+  metric: with_companion
+  type: difference
+  what: 'regression: tend-and-befriend (was T13), v0.5 vs v0.2'
+- arch: v0.5 vs v0.4
+  id: R5
+  metric: drive (first 1000 steps in new world)
+  type: equivalence
+  what: 'no harm: adaptation to a new world equivalent to v0.4'

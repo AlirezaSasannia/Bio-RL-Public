@@ -1,0 +1,18 @@
+design: for each of the 4 evolved homeostatic agents (ancestors), add one channel
+  at a time at 10% and 30% of its search range (cortisol gain kappa = 0.05, the reference
+  value); everything else unchanged. Held-out grid, 16 agents per ecology, common
+  random numbers (same layouts and random seed as the ancestor), so differences are
+  paired at the agent level.
+id: evolution_v1_followup_invasion
+interpretation: a significant positive difference = positive selection near a hormone-free
+  ancestor; negative = selected against; neither = neutral
+motivation: 'with an equal budget, the 11-parameter endocrine search may be disadvantaged
+  by its dimension (one restart converged to alpha = 0.02). The cleaner evolutionary
+  question is local: starting from a hormone-free ancestor, would selection favour
+  switching a channel on?'
+registered: after the P1-P3 grid results were seen (endocrine < homeostatic), before
+  this analysis was run
+status: follow-up; reported separately from the confirmatory tests P1-P6
+test: 'per channel and mutation size: mean survival difference mutant - ancestor over
+  the 48 ecology means (averaged over ancestors), two-sided Wilcoxon signed-rank,
+  Holm across the 16 tests'

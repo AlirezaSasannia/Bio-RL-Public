@@ -1,0 +1,32 @@
+budget: 'C2-0 budget for each of 8 NEW bases k = 0..7: CMA-ES 30 generations x 12
+  x 48, sigma 0.15; start u ~ U(0.1, 0.9) from default_rng(26100 + k) (random starts
+  for independence; C2-0 started all at 0.5); CMA seed 26000 + k; generation seeds
+  60000000 + 1000 k + g (training schedules and layouts, bank 400000-401999); simulator
+  seed 60000000 + 10 g + c (c = call, bases 0-3 / 4-7)'
+check: parameters within 2% of a bound reported (C-stage convention)
+id: single_stageC3_base
+learner: dqnv of stage C2 (unchanged; the dqnv path of world.py is bit-identical to
+  C2 after the C3 additions)
+registered: after the 2026-10-21 review and stage B10/B11, before any C3 run; dev
+  smoke tests only
+space:
+  alpha0:
+  - 0.0001
+  - 0.1
+  - log
+  eps0:
+  - 0.0
+  - 0.5
+  - lin
+  q_init:
+  - 0.0
+  - 1.0
+  - lin
+  s0:
+  - 0.05
+  - 20.0
+  - log
+  vdbe_sigma:
+  - 0.001
+  - 100.0
+  - log

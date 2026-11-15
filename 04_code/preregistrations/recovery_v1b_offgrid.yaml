@@ -1,0 +1,6 @@
+criterion: Spearman r(true, estimate) >= 0.7
+id: recovery_v1b_offgrid
+steps_per_phase: 2000
+subjects: 30
+true_params: kappa log-uniform [0.01, 0.2]; c_to_safety uniform [0, 5]; subject seeds
+  100+

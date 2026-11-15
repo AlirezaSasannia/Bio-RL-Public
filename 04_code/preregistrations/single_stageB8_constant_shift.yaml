@@ -1,0 +1,18 @@
+arms:
+  bias: 'generic layer without inputs: 3 constant knob offsets in (-6, 6), start 0'
+  wide: 're-tune base with widened bounds: alpha0 (0.002, 0.9) log, eps0 (0, 0.5),
+    s0 (0.005, 8) log, vdbe_sigma (0.001, 100) log; start at the base'
+budget: 20 x 12 x 48, sigma 0.15, 4 runs on VDBE bases r % 4
+id: single_stageB8_constant_shift
+inference: B5 independent set; one-sided Wilcoxon over schedules + hierarchical CI;
+  Holm over H1-H2
+interpretation: if bias or wide match generic, the add-on gain is mainly a constant
+  shift of the operating point that the base search could not reach, not input-dependent
+  modulation
+observation: VDBE bases on search bounds (alpha0 0.02 in 4/4; s0 0.25 in 3/4); generic
+  layer holds large near-constant offsets (safety weight x0.02-0.12; exploration -3.4
+  logits)
+predictions:
+  H1: generic > bias
+  H2: generic > wide
+registered: after exploratory mechanism analysis, before any B8 run

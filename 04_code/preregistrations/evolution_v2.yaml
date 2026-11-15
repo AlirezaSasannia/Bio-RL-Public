@@ -1,0 +1,32 @@
+changes_from_v1:
+  calibration: no-hormone agents only, results/logs/evo_v2_dev_calibration.out
+  death: starvation unchanged (100 steps at zero energy); death as soon as safety
+    reaches 0
+  kinds: endocrine and homeostatic only (v1 showed Pearce-Hall and fixed reward no
+    better)
+  test grid: lethality {0.25, 0.5}; controllable p_zone 0.2; uncontrollable p_random
+    0.008
+  training ranges: p_zone U(0.1,0.3), p_random U(0.004,0.012), lethality U(0.2,0.55)
+families:
+  Q1-Q2: Holm across 2
+  Q3: Holm across 16
+  Q4-Q5: Holm across 3 (Q4 main, Q4 interaction, Q5)
+id: evolution_v2
+motivation: in v1 an injury could only kill if safety stayed at 0 for 100 steps, which
+  passive recovery prevents, so almost all deaths were starvation and danger hardly
+  mattered. The smoke-detector account predicts a benefit of defensive modulation
+  only when a single miss is costly. v2 makes injuries lethal.
+predictions:
+  Q1: endocrine survival > homeostatic survival on the held-out grid (one-sided Wilcoxon
+    over 48 ecologies)
+  Q2: the endocrine advantage is larger in ecologies with danger (32) than without
+    (16) (one-sided Mann-Whitney on per-ecology differences)
+  Q3: 'invasion from the 4 v2 homeostatic ancestors, as evolution_v1_followup_invasion
+    (8 channels x 2 sizes, Holm across 16). Directional prediction: c_to_safety and/or
+    c_to_temp (cortisol-driven caution) are positively selected'
+  Q4: by-product helplessness in the v2 endocrine agents (as P5), and larger than
+    in v2 homeostatic agents
+  Q5: by-product excess sheltering under harmless uncontrollable damage (as P6)
+registered: after evolution_v1 (all results seen), before any v2 optimisation
+search: identical to evolution_v1 (incl. amendment 1), output results/logs/evo_v2/
+test_layouts: seeds 600000-600999 (new)

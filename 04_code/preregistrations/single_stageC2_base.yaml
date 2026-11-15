@@ -1,0 +1,36 @@
+budget: 'as C0: 4 restarts x 30 generations x 12 x 48, sigma 0.15, start u = 0.5,
+  CMA seeds 17000 + r, generation seed 32000000 + 1000 r + g, training layout bank
+  400000-401999'
+check: parameters within 2% of a bound reported; a bound equal to a simulator cap
+  (eps0 0.5) is not widened
+id: single_stageC2_base
+learner: 'dqnv: as the C0 learner but the input is a 5x5 egocentric view (ready food,
+  regrowing food, shelter, outside the grid, own remembered threat T_map; 125 inputs)
+  + cell coordinates + need levels + 5 signal slots (scale xs, 0 here); no one-hot
+  cell; optional FiLM of the hidden layer (scale fs, 0 here). Hidden 32, replay 1000,
+  minibatch 8 incl. newest, no separate target net, Adam scaled by the learning-rate
+  knob, optimistic output bias q_init, per-cell VDBE. Replayed views use stored layout
+  and food readiness and the current threat memory'
+registered: after paper v0.7 (C1), before any C2 run; dev smoke tests only (seeds
+  99970+, 99000+)
+space:
+  alpha0:
+  - 0.0001
+  - 0.1
+  - log
+  eps0:
+  - 0.0
+  - 0.5
+  - lin
+  q_init:
+  - 0.0
+  - 1.0
+  - lin
+  s0:
+  - 0.05
+  - 20.0
+  - log
+  vdbe_sigma:
+  - 0.001
+  - 100.0
+  - log

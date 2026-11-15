@@ -1,0 +1,62 @@
+arms:
+  aug: signals as network input, scales xs (0.03, 30) log, start ~1; 5 params
+  bias: 3 constant knob offsets (-6, 6), start 0
+  control: 'no signals: re-tune the 5 base parameters from the base'
+  film: FiLM of the hidden layer by the signals (C2), scales fs (0.03, 30) log, start
+    ~1; 5 params
+  generic: knob-level global layer, 15 weights (-6, 6), start 0
+  gru: hidden layer replaced by a GRU (32 units) fed the view, coordinates, needs,
+    the last felt reward and the last action; no appraisal signals; stored-state sequence
+    replay, 2 sequences x 4 steps per update (8 transitions, as dqnv), gradients by
+    autograd through the 4 steps; re-tune the 5 base parameters from the dqnv base
+  gru_aug: 'gru plus the 5 signals as input: 5 base parameters (start at the base)
+    + xs (start ~1); 10 params'
+  metagrad: 'online one-step meta-gradient of the learning rate through the differentiable
+    update (Xu et al. 2018; as in STAC, Zahavy et al. 2020): after each Adam step,
+    d L_val / d log-lr offset = -<grad L_val(net''), lr * direction> on an independent
+    replayed minibatch, RMS-normalised, step mg_lr; exploration and safety weight
+    have no gradient through the value loss and get constant offsets. CMA tunes m_a
+    (-3, 3) initial lr offset, m_e, m_s (-6, 6), mg_lr (1e-6, 0.3) log; start offsets
+    0 and mg_lr ~3e-4 at u = 0.45 (near-zero effect, away from the bound; a dev smoke
+    start at u = 0.1 hit the lower bound in 3 of 8 bases); 4 params'
+budget: 'each arm on each base: CMA-ES 20 x 12 x 48, sigma 0.15; CMA seed 27000 +
+  100 * arm index + k; generation seeds 61000000 + 1000 k + g and simulator seed 61000000
+  + 10 g + c shared by all arms (common random numbers)'
+id: single_stageC3_independent_bases_gru_metagrad
+inference: 'as B10: d = difference of agent-averaged score per (base, schedule); unit
+  = base (n = 8): one-sided t-test on base means, Holm over P1-P5 (and within each
+  secondary family), 95% three-level bootstrap CI (reanalysis_runlevel.ci3); a claim
+  needs p_Holm < 0.05 AND the CI excluding 0. Registered checks reported beside it:
+  exact Wilcoxon on base means and the schedule-level one-sided Wilcoxon with the
+  hierarchical CI (stage_b3.hier_ci), Holm over P1-P5'
+interpretation: 'P3/P4 pass: the signals add information a recurrent learner does
+  not build for itself from rewards and actions within the budget. P3/P4 fail with
+  gru >= film/aug: the C2 gain may be replaceable by memory. P5 replicates the C2
+  finding that the knob layer is worse than input. S1 asks whether the signals still
+  help a recurrent learner. Caveat fixed in advance: gru also receives the last reward
+  and action, which the feed-forward arms do not.'
+predictions:
+  P1: film > control
+  P2: aug > control
+  P3: film > gru
+  P4: aug > gru
+  P5: generic < aug (tested as aug - generic > 0)
+question: 'With 8 independent view-learner bases: do the appraisal signals help as
+  network input or FiLM, do they help beyond a recurrent network that can build its
+  own memory of recent experience (GRU), and how does an online meta-gradient on the
+  knobs compare?'
+registered: after C3-0 (bases frozen), before any C3 arm run
+secondary:
+  S1: gru_aug > gru (one-sided)
+  S2: metagrad vs control (two-sided)
+  S3: gru vs control (two-sided)
+  bias: generic, aug, film, metagrad vs bias (two-sided, Holm within this family)
+  bounds: parameters within 2% of a bound reported for every base and arm
+  deaths: survival, wellbeing while alive, deaths by regime on the test set (descriptive)
+  savings: stage-D savings protocol (death disabled; safe / X three times, X = danger,
+    uncontrollable, scarce, volatile), layouts 2300000-2300999, simulator 120000 +
+    1000 X + c; re-exposure R and savings S = R - e1 per arm, differences to control,
+    CI only
+test: 'new independent set: 128 schedules (seeds 22000-22127) x 4 agents per base,
+  layout bank 2200000-2200999, simulator seed 110000 + c (c = 0 for bases 0-3, 1 for
+  bases 4-7), identical for all arms'

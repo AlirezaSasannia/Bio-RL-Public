@@ -1,0 +1,22 @@
+id: single_stageB6_adaptation_speed
+inference: one-sided Wilcoxon over layouts of the run-averaged difference, Holm over
+  5 switches per prediction; hierarchical CI (runs, layouts)
+predictions:
+  F1: generic > control in [0,300)
+  F2: bio > control in [0,300)
+protocol: 1500 steps safe, then regime X for 1000 steps, death disabled; 128 layouts
+  x 4 agents
+registered: after review of v0.3, before any B6 run
+switches:
+- safe->danger
+- safe->uncontrollable
+- safe->scarce
+- safe->volatile
+- danger->safe
+windows:
+- - 0
+  - 100
+- - 100
+  - 300
+- - 300
+  - 1000

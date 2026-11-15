@@ -1,0 +1,9 @@
+base: VDBE base r % 4; CMA seeds and training schedules new (seed formulas of B3/B5
+  with r = 4..7)
+change: runs 4-7 for control, bio, generic (B3 protocol) and yoked, augtab, auglin
+  (B5 protocol)
+claims: B5 primary E1-E3 and B3/B5 secondary comparisons re-estimated with 8 runs;
+  same criteria
+id: single_stageB7_more_runs
+registered: 'after review #2 of v0.3, before any B7 run'
+test: B5 independent set and B6 speed protocol, all 8 runs

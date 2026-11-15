@@ -1,0 +1,7 @@
+classification: trap if delta_unc + 1.96*se < 0; benefit if delta_unc - 1.96*se >
+  0; harm if delta_con + 1.96*se < 0
+id: sensitivity_v2
+n_samples: 100
+outcomes: delta_unc (trap index), delta_con (harm), paired by seed; SE per sample
+seeds: 12
+steps: 4000

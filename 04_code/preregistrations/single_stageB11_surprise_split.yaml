@@ -1,0 +1,38 @@
+arms:
+  bias: B10 solution, reused
+  generic: B10 solution, reused (same budget and generation seeds)
+  generic_split: vdbe_generic with inputs threat, K, change, intake, energy deficit,
+    noise; 18 weights in (-3, 3), start u = 0.5; CMA seed 24000 + k, generation seeds
+    51000000 + 1000 k + g (identical to the B10 arms of base k), 20 x 12 x 48, sigma
+    0.15, on B10 base k
+caveat: inputs are non-negative, so a weight mixes modulation with a constant offset;
+  the per-base effective modulation w * sd(input over alive test steps) is reported
+  beside the weights
+id: single_stageB11_surprise_split
+inference: 'Q1, S1, S2 as B10: unit = base (n = 8), one-sided t-test (claim: p < 0.05
+  and three-level CI excludes 0; Holm over S1-S2) plus exact Wilcoxon on base means
+  and the schedule-level Wilcoxon with hierarchical CI as checks. Q2/Q3: count of
+  bases with the predicted sign; exact one-sided sign test p reported (6/8 gives p
+  = 0.145, so the count criterion is descriptive of consistency, not significance).
+  Weights within 1% of +-3 are reported.'
+interpretation: 'Q1 pass: the split carries usable information beyond the single surprise
+  signal. Q2+Q3 pass without Q1: the layer learns the normative direction but it does
+  not improve the score. No detectable difference is not equivalence.'
+predictions:
+  Q1: generic_split > generic (score, one-sided)
+  Q2: learned weight of change on log alpha (w_2_a) > 0 in at least 6 of 8 bases
+  Q3: learned weight of noise on log alpha (w_5_a) < 0 in at least 6 of 8 bases
+question: Does splitting the surprise input into a change and a noise component improve
+  the generic layer, and does the layer learn the normative signs (change raises,
+  noise lowers the learning rate)?
+registered: after the B11 development runs (dev seeds only), before any B11 confirmatory
+  run
+scales: 'input scales fixed from a zero-weight diagnostic on dev seeds (mean alive
+  value ~1): split1 change /0.001, noise /0.01; split2 change /0.003, noise /0.02;
+  both clipped to [0, 30]'
+secondary:
+  S1: generic_split > bias (one-sided)
+  S2: generic > bias on the new set (one-sided)
+signal: change = |EMA_50(delta)|, noise = sqrt(EMA_50(delta^2) - EMA_50(delta)^2)
+test: 'new independent set, never used: 128 schedules (seeds 21000-21127) x 4 agents,
+  layout bank 2100000-2100999, simulator seeds 87000 + k'

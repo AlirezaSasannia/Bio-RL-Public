@@ -1,0 +1,59 @@
+exploratory:
+- which ecology factors carry the endocrine advantage
+- consistency of evolved gains across restarts
+families:
+  by-products:
+  - P5
+  - P6
+  kind comparisons:
+  - P1
+  - P2
+  - P3
+  lesions: P4 (8 tests)
+fitness: mean survival fraction over a 5000-step life (death after 100 steps at zero
+  energy or safety; no death in the first 500 steps)
+id: evolution_v1
+kinds:
+- endocrine
+- homeostatic
+- pearcehall
+- fixed
+predictions:
+  P1: endocrine survival > homeostatic survival
+  P2: endocrine survival > pearcehall survival
+  P3: endocrine survival > fixed-reward survival
+  P4: 'lesion: setting a channel gain to 0 in the evolved endocrine agent lowers survival;
+    tested for each of the 8 channels, Holm across 8. Directional expectations (not
+    required for P4 to count): ne_to_temp or ne_to_alpha matters in volatile ecologies,
+    c_to_safety in lethal ecologies'
+  P5: 'by-product helplessness: in the triadic design (no death, 3000 + 1000 steps)
+    the evolved endocrine agent forages less in a new world after yoked than after
+    escapable damage'
+  P6: 'by-product avoidance: under uncontrollable but nearly harmless damage (lethality
+    0.03) the evolved endocrine agent spends more time in the shelter than the evolved
+    homeostatic agent'
+question: Do hormone channels raise survival across a distribution of ecologies when
+  every architecture is optimised with the same budget, and does the optimised endocrine
+  agent show stress pathologies (helplessness, avoidance) as by-products?
+search:
+  agents_per_candidate: 48
+  algorithm: CMA-ES on the unit cube
+  common_random_numbers: same ecologies and layouts for all candidates and all kinds
+    in a given generation
+  generations: 35
+  popsize: 12
+  restarts: 4
+  sigma0: 0.3
+  solution: CMA mean of the last generation
+  training_layouts: seeds 400000-401999
+  x0: uniform random in [0.1, 0.9] per restart
+simulator: bio_rl.fast.popsim (validated against the reference, results/logs/evo_validate_popsim.csv)
+test:
+  agents_per_ecology_per_restart: 32
+  ecologies: full grid 3 danger x 2 lethality x 2 volatility x 2 scarcity x 2 companion
+    = 48
+  test: one-sided Wilcoxon signed-rank, Holm within each family; effect = mean survival
+    difference with bootstrap CI over ecologies
+  test_layouts: seeds 500000-500999 (never seen in training)
+  unit_of_inference: ecology means (48), averaged over restarts and agents; paired
+    across kinds

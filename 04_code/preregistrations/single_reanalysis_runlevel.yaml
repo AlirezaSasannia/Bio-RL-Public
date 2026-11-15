@@ -1,0 +1,25 @@
+criterion: a comparison holds under the strict reading if base-level p_Holm < 0.05
+  AND the three-level CI excludes 0 in the tested direction
+data: stageB3 (all four sets), B5, B7, B8, B9, B9b, C1, C2 and D (score measure only)
+  *_test_raw.csv; every comparison row of the matching *_tests.csv
+id: single_reanalysis_runlevel
+interpretation: 'rows that pass the logged criterion but fail the strict one are reported
+  as dependent on the four shared bases; with n = 4 bases the strict test has low
+  power, so a strict failure is not evidence of no effect. Primary use: decide which
+  claims need independent bases (new stage).'
+question: Which registered comparisons survive inference that treats the frozen base
+  learner (base = run % 4) as the top-level replication unit?
+registered: after all stage results (B3-D) were seen, before computing any base-level
+  statistic
+statistics:
+  base_level: t-test on base means (runs averaged within base; n = 4, df = 3), same
+    sidedness; Holm over the rows of the original family (stage x family or set)
+  ci3: '95% three-level bootstrap CI, 4000 draws: resample bases, then runs within
+    each drawn base, then schedules (shared across runs, as in stage_b3.hier_ci);
+    seed 0'
+  d: difference of agent-averaged score per (run, schedule), arms paired by run index
+    and schedule
+  run_level: t-test on run means (n = runs), one-sided in the registered direction,
+    two-sided for secondary rows
+status: exploratory sensitivity re-analysis of existing test logs; no new simulation,
+  no new data

@@ -1,0 +1,16 @@
+frozen_params:
+  c_to_belonging: 4.1085487701210335
+  c_to_safety: 3.633918124210173
+  delay: 10
+  feedback: 0.0398111648587886
+  kappa_c: 0.0887745521392389
+  ot_buffer: 2.405412490258336
+  tau_c: 224.3266775616156
+id: predict_v1
+predictions:
+- H1 yoked < escapable phase-2 food
+- H2 companion < alone cortisol
+- H3 v0.4 > v0.2 time with companion (uncontrollable)
+- H4 v0.4 equivalent to no hormones on energy (controllable)
+seed_offset: 50000
+seeds: 64

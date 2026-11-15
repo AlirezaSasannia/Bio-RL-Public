@@ -1,0 +1,8 @@
+amends: evolution_v1
+change: epsilon search range (0, 0.4) -> (0, 0.5)
+id: evolution_v1_amendment1
+reason: the simulator caps epsilon at 0.5, so noradrenaline -> exploration could raise
+  exploration above the largest value the no-hormone agents were allowed (0.4). The
+  first run hit the 0.4 bound for both kinds. That would be an unfair advantage for
+  hormones. All runs restarted; the aborted run is kept in results/logs/evo_aborted_eps_bound/.
+when: after 1 of 16 optimisation runs, before any test-set evaluation

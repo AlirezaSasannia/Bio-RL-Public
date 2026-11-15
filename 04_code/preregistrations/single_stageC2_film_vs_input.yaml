@@ -1,0 +1,43 @@
+arms:
+  aug: signals as network input, per-input scales xs (0.03, 30) log, start ~1; 5 params
+  bias: 3 constant knob offsets (-6, 6), start 0
+  control: 'no signals: re-tune the 5 base parameters from the base'
+  film: 'signals modulate the hidden layer: pre'' = pre * (1 + tanh(xf G)) + xf Fb,
+    xf = scaled signals, G and Fb start at 0 and are learned within the life by the
+    TD gradient; CMA tunes the input scales fs (0.03, 30) log, start ~1; 5 params'
+  film_yoked: 'as film, but the FiLM is driven by another agent''s signals (partner
+    in the same evaluation block: +24 mod 48 in training, +256 mod 512 at test); capacity
+    control'
+  generic: 'knob-level global layer (lr, exploration, safety weight): 15 weights (-6,
+    6), start 0'
+budget: each arm 8 runs on base r % 4, CMA-ES 20 x 12 x 48, sigma 0.15; CMA seeds
+  18000 + 100 * arm index + r; generation seed 33000000 + 1000 r + g shared by all
+  arms of run r; run in lockstep groups of 2 runs
+id: single_stageC2_film_vs_input
+inference: one-sided Wilcoxon over schedules of the run-averaged difference, Holm
+  across P1-P5, plus hierarchical bootstrap 95% CI (runs, then schedules); a claim
+  needs both
+interpretation: 'P1 passes: modulating computation beats adding the same signals as
+  input (the modulator-vs-state point in a generalising learner). P1 fails with aug
+  >= film: additive input is enough; P2 tests whether film needs the agent''s own
+  signals (information) or only extra capacity'
+predictions:
+  P1: film > aug
+  P2: film > film_yoked
+  P3: film > control
+  P4: aug > control
+  P5: generic > control
+question: With a learner that can generalise across layouts (egocentric view), do
+  the appraisal signals help more as additive network input or as multiplicative modulation
+  of the network's computation (FiLM, neuromodulation-like gain and bias of hidden
+  units, learned within the life)? Does the knob-level global layer still help?
+registered: after C2-0 (bases frozen), before any C2 arm run
+secondary:
+  bounds: parameters within 2% of a bound reported
+  decomposition: survival, wellbeing while alive, per-regime score, deaths by regime
+  speed: B6 switch protocol, death disabled, layouts 1600000-1600999, simulator seeds
+    94000 + run; arms - control per switch and window, CI only
+  two_sided: aug - film, generic - aug, generic - bias, film - bias, aug - film_yoked
+test: 'new independent set: 128 schedules (seeds 11000-11127) x 4 agents, layout bank
+  1500000-1500999, simulator seeds 84000 + run; all arms of a run in one call (common
+  schedules, layouts and world noise)'
