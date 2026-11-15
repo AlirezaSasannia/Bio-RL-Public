@@ -1,0 +1,6 @@
+# v0.5a: v0.4 with the contingency estimate of controllability (no new channel).
+# Isolates the effect of the estimator from the effect of the vigour channel.
+base: v0.4
+endocrine:
+  k_estimator: contingency
+  tau_kp: 1500

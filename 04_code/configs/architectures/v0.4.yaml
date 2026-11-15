@@ -1,0 +1,12 @@
+# v0.4: v0.2 + oxytocin buffering of cortisol input + tend-and-befriend.
+kind: endocrine
+endocrine:
+  ne_to_alpha: 0.0
+  ne_to_temp: 0.0
+  c_alpha_up: 0.0
+  c_alpha_down: 0.0
+  c_to_temp: 0.0
+  c_to_safety: 2.0          # cortisol -> safety weight
+  use_ot: true
+  ot_buffer: 2.0            # Heinrichs et al. 2003: social buffering of the HPA response
+  c_to_belonging: 4.0       # Taylor et al. 2000: tend-and-befriend

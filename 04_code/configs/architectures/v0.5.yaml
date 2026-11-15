@@ -1,0 +1,8 @@
+# v0.5: v0.5a + controllability prior -> action vigour (Huys & Dayan 2009).
+# Under the no-control hypothesis (probability 1 - Kp) a move brings what staying
+# brings and still costs its energy. kp_effort = 1 means the physiological cost
+# (move_cost weighted by the current energy weight): no new free gain.
+# Fixed on development seeds 900-915 (experiments/dev/pilot_v05.py) before battery_v2.
+base: v0.5a
+endocrine:
+  kp_effort: 1.0

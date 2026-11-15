@@ -1,0 +1,10 @@
+# v0.2: NE and cortisol as states; one read-out: cortisol -> safety weight.
+kind: endocrine
+endocrine:
+  ne_to_alpha: 0.0
+  ne_to_temp: 0.0
+  c_alpha_up: 0.0
+  c_alpha_down: 0.0
+  c_to_temp: 0.0
+  c_to_safety: 2.0          # Dickerson & Kemeny 2004 (drivers); safety re-weighting
+  use_ot: true

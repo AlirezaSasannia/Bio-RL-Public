@@ -1,0 +1,3 @@
+# No hormones: homeostatic agent with per-need values. The null model.
+kind: homeostatic
+endocrine: {}

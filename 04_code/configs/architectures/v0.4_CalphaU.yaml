@@ -1,0 +1,3 @@
+# v0.4 + cortisol -> learning rate as inverted U (dropped in round 2; re-tested against the Yerkes-Dodson phenomenon)
+base: v0.4
+endocrine: {c_alpha_up: 1.0, c_alpha_down: 1.2}

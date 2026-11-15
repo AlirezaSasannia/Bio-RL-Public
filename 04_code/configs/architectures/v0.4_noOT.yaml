@@ -1,0 +1,3 @@
+# v0.4 without oxytocin read-outs: mechanism control for social buffering
+base: v0.4
+endocrine: {ot_buffer: 0.0, c_to_belonging: 0.0}
